@@ -8,6 +8,10 @@ Library    RPA.Browser.Selenium    auto_close=${False}
 Library    RPA.Excel.Files
 Library    RPA.HTTP
 Library    RPA.Tables
+Library    Telnet
+Library    RPA.Desktop
+#Library    RPA.Browser.Playwright
+
   
 
 *** Variables ***
@@ -44,8 +48,9 @@ Get orders
 Fill the form
     [Arguments]    ${order}
     Select From List By Value    head    ${order}[Head]
-    Click Element  id-body-${order}[Body]
-    Click Element  1681951880523    ${order}[Legs]
+    Click Element    id-body-${order}[Body]
+    Click ELement    class:form-control
+    Type Text    ${order}[Legs]
     Input Text    address    ${order}[Address]
 
 Download and store the receipt
