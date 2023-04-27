@@ -17,7 +17,7 @@ Library    RPA.PDF
 
 *** Variables ***
 ${URL}=     https://robotsparebinindustries.com/#/robot-order
-
+#${OUTPUT_DIR}=    receipts
 
 *** Tasks ***
 Order robots from RobotSpareBin Industries Inc
@@ -43,7 +43,7 @@ Get orders
     FOR    ${order}    IN    @{orders}
         Close the annoying modal
         Fill the form    ${order}
-        
+        Order another Robot
     END    
 
 Fill the form
@@ -54,24 +54,33 @@ Fill the form
     Type Text    ${order}[Legs]
     Input Text    address    ${order}[Address]
     Click Button    id:preview
-    Click Button    //button[@class="btn btn-primary"]
-    Download and store the receipt
+    Wait Until Keyword Succeeds    1 min    2 sec    Click Button    id:order    #//button[@class="btn btn-primary"]
+    TRY
+        Wait Until Element Is Visible    id:receipt
+    EXCEPT    message
+        Wait Until Keyword Succeeds    1 min    2 sec    Click Button    id:order
+    FINALLY
+        Download and store the receipt    ${order}
+    END
+
+
     
 
 
 
 Download and store the receipt
-    #Wait Until Element Is Visible    id:robot-preview-image
+    [Arguments]    ${order}
     Wait Until Element Is Visible    id:receipt
     ${receipt_html}=    Get Element Attribute    id:receipt    outerHTML
-    Html To Pdf    ${receipt_html}    ${OUTPUT_DIR}${/}receipt.pdf
+    Html To Pdf    ${receipt_html}    ${OUTPUT_DIR}${/}receipts${/}receipt_${order}[Order number].pdf
     Screenshot    id:robot-preview-image    ${OUTPUT_DIR}${/}preview.png
     ${image}=    Create List
     ...    ${OUTPUT_DIR}${/}preview.png
-    Add Files To Pdf    ${image}   ${OUTPUT_DIR}${/}receipt.pdf    ${True}                       
+    Add Files To Pdf    ${image}   ${OUTPUT_DIR}${/}receipts${/}receipt_${order}[Order number].pdf    ${True}                       
 
 
 Order another Robot
+    Click Button    id:order-another
 
 Archive ouput PDFs
 
