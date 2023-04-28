@@ -11,6 +11,7 @@ Library    RPA.Tables
 Library    Telnet
 Library    RPA.Desktop
 Library    RPA.PDF
+Library    RPA.Tasks
 #Library    RPA.Browser.Playwright
 
   
@@ -54,23 +55,20 @@ Fill the form
     Type Text    ${order}[Legs]
     Input Text    address    ${order}[Address]
     Click Button    id:preview
-    Wait Until Keyword Succeeds    1 min    2 sec    Click Button    id:order    #//button[@class="btn btn-primary"]
-    TRY
-        Wait Until Element Is Visible    id:receipt
-    EXCEPT    message
-        Wait Until Keyword Succeeds    1 min    2 sec    Click Button    id:order
-    FINALLY
-        Download and store the receipt    ${order}
-    END
+    Wait Until Keyword Succeeds    1 min    2 sec    Submit the order and keep checking until Succeeds  
+    Download and store the receipt    ${order}
 
 
     
 
+Submit the order and keep checking until Succeeds
+    Click Element    id:order
+    Element Should Be Visible    id:receipt
+    
 
 
 Download and store the receipt
-    [Arguments]    ${order}
-    Wait Until Element Is Visible    id:receipt
+    [Arguments]    ${order}    
     ${receipt_html}=    Get Element Attribute    id:receipt    outerHTML
     Html To Pdf    ${receipt_html}    ${OUTPUT_DIR}${/}receipts${/}receipt_${order}[Order number].pdf
     Screenshot    id:robot-preview-image    ${OUTPUT_DIR}${/}preview.png
