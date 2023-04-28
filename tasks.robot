@@ -12,6 +12,7 @@ Library    Telnet
 Library    RPA.Desktop
 Library    RPA.PDF
 Library    RPA.Tasks
+Library    RPA.Archive
 #Library    RPA.Browser.Playwright
 
   
@@ -24,6 +25,9 @@ ${URL}=     https://robotsparebinindustries.com/#/robot-order
 Order robots from RobotSpareBin Industries Inc
     Open the robot order website
     Get orders
+    Archive ouput PDFs
+    [Teardown]    Close RobotSpareBin Browser
+    
     
 
 
@@ -81,5 +85,8 @@ Order another Robot
     Click Button    id:order-another
 
 Archive ouput PDFs
+    Archive Folder With Zip  ${OUTPUT_DIR}${/}receipts  receipts.zip
 
 Close RobotSpareBin Browser
+    Close Browser
+    
