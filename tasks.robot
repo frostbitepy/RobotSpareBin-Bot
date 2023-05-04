@@ -19,7 +19,7 @@ Library    RPA.Archive
 
 *** Variables ***
 ${URL}=     https://robotsparebinindustries.com/#/robot-order
-#${OUTPUT_DIR}=    receipts
+
 
 *** Tasks ***
 Order robots from RobotSpareBin Industries Inc
